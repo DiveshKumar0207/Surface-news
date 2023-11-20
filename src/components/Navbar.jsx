@@ -1,4 +1,5 @@
 import { Component } from "react";
+import { Link } from "react-router-dom";
 import {
   Navbar,
   Typography,
@@ -20,12 +21,6 @@ import {
 } from "@heroicons/react/24/outline";
 
 const navListMenuItems = [
-  {
-    title: "General",
-  },
-  {
-    title: "Buisness",
-  },
   {
     title: "Entertainment ",
   },
@@ -53,7 +48,7 @@ class NavListMenu extends Component {
   }
 
   renderItems = navListMenuItems.map(({ title }, key) => (
-    <a href="#" key={key} className="">
+    <Link to={`/${title.toLowerCase()}`} key={key} className="">
       <MenuItem className="flex items-center gap-3 rounded-lg text-textColor-high hover:hover:bg-overlayDarkColors-dp04 hover:text-textColor-high lg-max:mx-4">
         <div>
           <Typography
@@ -64,7 +59,7 @@ class NavListMenu extends Component {
           </Typography>
         </div>
       </MenuItem>
-    </a>
+    </Link>
   ));
 
   render() {
@@ -133,21 +128,21 @@ class NavList extends Component {
     return (
       <ul className="my-2 flex flex-col lg:mb-0 lg:mt-0 lg:flex-row lg:items-center  ">
         <Typography as="li" variant="small" className=" font-medium">
-          <a
-            href="#"
-            className="flex items-center rounded-md px-3 py-2 font-medium  text-textColor-high  transition-colors hover:hover:bg-overlayDarkColors-dp04 lg-max:mx-4 "
-          >
-            All News
-          </a>
-        </Typography>
-
-        <Typography as="li" variant="small" className=" font-medium">
-          <a
-            href="#"
+          <Link
+            to={"/"}
             className="flex items-center rounded-md px-3 py-2 font-medium  text-textColor-high  transition-colors hover:hover:bg-overlayDarkColors-dp04 lg-max:mx-4 "
           >
             Top Stories
-          </a>
+          </Link>
+        </Typography>
+
+        <Typography as="li" variant="small" className=" font-medium">
+          <Link
+            to={"/business"}
+            className="flex items-center rounded-md px-3 py-2 font-medium  text-textColor-high  transition-colors hover:hover:bg-overlayDarkColors-dp04 lg-max:mx-4 "
+          >
+            Buisness
+          </Link>
         </Typography>
 
         <NavListMenu />

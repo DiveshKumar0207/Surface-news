@@ -9,6 +9,16 @@ import LoadingSkeleton from "./Skeleton";
 export default class News extends Component {
   static propTypes = {
     URL: PropType.string,
+    country: PropType.string,
+    pageSize: PropType.number,
+    endpoints: PropType.string,
+    category: PropType.string,
+  };
+  static defaultProps = {
+    country: "in",
+    category: "general",
+    endpoints: "top-headlines",
+    pageSize: 12,
   };
 
   constructor() {
@@ -25,15 +35,16 @@ export default class News extends Component {
     this.setState({
       loading: true,
     });
-    let URL = `https://newsapi.org/v2/top-headlines?country=in&apiKey=${this.props.URL}&page=${this.state.currentPageNumber}&pageSize=20`;
+    let URL = `https://newsapi.org/v2/${this.props.endpoints}?country=${this.props.country}&category=${this.props.category}&apikey=${this.props.URL}&page=${this.state.currentPageNumber}&pageSize=${this.props.pageSize}`;
     let data = await fetch(URL);
     let parsedData = await data.json();
     this.setState({
       articles: parsedData.articles,
-      totalPagingRequirement: Math.ceil(parsedData.totalResults / 20),
+      totalPagingRequirement: Math.ceil(
+        parsedData.totalResults / this.props.pageSize,
+      ),
       loading: false,
     });
-    console.log(this.state.loading);
   }
 
   // setPage func ->sent to be prop
@@ -42,7 +53,7 @@ export default class News extends Component {
       loading: true,
       currentPageNumber: pageno,
     });
-    let URL = `https://newsapi.org/v2/top-headlines?country=in&apiKey=${this.props.URL}&page=${pageno}&pageSize=20`;
+    let URL = `https://newsapi.org/v2/${this.props.endpoints}?country=${this.props.country}&category=${this.props.category}&apikey=${this.props.URL}&page=${pageno}&pageSize=${this.props.pageSize}`;
     let data = await fetch(URL);
     let parsedData = await data.json();
     this.setState({
@@ -66,6 +77,7 @@ export default class News extends Component {
     let newsImgURl;
     return (
       <>
+        {/* //TODO below div responsiveness */}
         <div className="mx-24 mt-6 flex justify-between">
           <Typography variant="h3" color="blue-gray" className="underline">
             Top Headlines

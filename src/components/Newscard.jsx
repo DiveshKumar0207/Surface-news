@@ -37,7 +37,7 @@ export default class Newscard extends Component {
           />
         </CardHeader>
 
-        <CardBody className="min-h-[21rem]">
+        <CardBody className="h-[17rem] overflow-hidden">
           <Typography variant="h6" color="blue-gray" className="mb-2">
             {title}
           </Typography>
