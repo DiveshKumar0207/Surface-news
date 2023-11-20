@@ -6,10 +6,18 @@ import {
   Typography,
   Button,
 } from "@material-tailwind/react";
-import PropTypes from "prop-types";
+import PropType from "prop-types";
 import { Component } from "react";
 
 export default class Newscard extends Component {
+  static propTypes = {
+    imgUrl: PropType.string,
+    title: PropType.string,
+    sourceName: PropType.string,
+    content: PropType.string,
+    readMoreUrl: PropType.string,
+  };
+
   constructor(props) {
     super(props);
   }
@@ -35,16 +43,16 @@ export default class Newscard extends Component {
           </Typography>
 
           <Typography variant="small">{content}..</Typography>
-
-          <div className="flex items-center justify-between pt-2">
-            <Typography className="text-xs" variant="lead">
-              by {sourceName}
-            </Typography>
-            <Typography className="text-xs" variant="lead">
-              January 10
-            </Typography>
-          </div>
         </CardBody>
+
+        <div className="my-4 flex items-center justify-between px-9">
+          <Typography className="text-xs" variant="lead">
+            by {sourceName}
+          </Typography>
+          <Typography className="text-xs" variant="lead">
+            January 10
+          </Typography>
+        </div>
 
         <CardFooter className="flex items-center justify-between pt-0">
           <a href={readMoreUrl} target="_blank" rel="noopener noreferrer">
@@ -72,10 +80,10 @@ export default class Newscard extends Component {
   }
 }
 
-Newscard.propTypes = {
-  imgUrl: PropTypes.string,
-  title: PropTypes.string,
-  sourceName: PropTypes.string,
-  content: PropTypes.string,
-  readMoreUrl: PropTypes.string,
-};
+// Newscard.propTypes = {
+//   imgUrl: PropTypes.string,
+//   title: PropTypes.string,
+//   sourceName: PropTypes.string,
+//   content: PropTypes.string,
+//   readMoreUrl: PropTypes.string,
+// };

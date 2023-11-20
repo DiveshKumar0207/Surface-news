@@ -1,28 +1,21 @@
 import "./App.css";
 import { Component } from "react";
-import { Typography } from "@material-tailwind/react";
 
-import Navbardark from "./components/navbar";
-import Pagination from "./components/Pagination";
+import Navbar from "./components/Navbar";
 import News from "./components/News";
+
+const url = import.meta.env.VITE_NEWS_API_KEY;
 
 export default class App extends Component {
   render() {
     return (
       <>
         <div className="sticky top-0 z-10">
-          <Navbardark />
-        </div>
-
-        <div className="mx-24 mt-6 flex justify-between">
-          <Typography variant="h3" color="blue-gray" className="underline">
-            Main Headlines
-          </Typography>
-          <Pagination />
+          <Navbar />
         </div>
 
         <div>
-          <News />
+          <News URL={url} />
         </div>
       </>
     );

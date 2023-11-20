@@ -1,30 +1,59 @@
 import { Component } from "react";
 import { Button, IconButton } from "@material-tailwind/react";
 import { ArrowRightIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
+import PropType from "prop-types";
 
 export default class Pagination extends Component {
-  constructor() {
-    super();
+  static propTypes = {
+    totalPagingRequirement: PropType.number.isRequired,
+    setPage: PropType.func,
+    fetchData: PropType.func,
+  };
+
+  constructor(props) {
+    super(props);
     this.state = {
       active: 1,
     };
   }
-  getItemProps = (index) => ({
-    variant: this.state.active === index ? "filled" : "text",
+  getItemProps = (i) => ({
+    variant: this.state.active === i ? "filled" : "text",
     color: "gray",
-    onClick: () => this.setState({ active: index }),
+    onClick: () => this.setState({ active: i }),
   });
+
   next = () => {
-    if (this.state.active === 5) return;
+    if (this.state.active === this.props.totalPagingRequirement) return;
 
     this.setState({ active: this.state.active + 1 });
+
+    // PROPS FOR SETTING PAGINATIONG PAGE $ fetching data
+    this.props.setPage(this.state.active + 1);
   };
 
   prev = () => {
     if (this.state.active === 1) return;
 
     this.setState({ active: this.state.active - 1 });
+
+    // PROPS FOR SETTING PAGINATIONG PAGE $ fetching data
+    this.props.setPage(this.state.active - 1);
   };
+
+  makePaginationButtons() {
+    if (this.props.totalPagingRequirement) {
+      const buttons = [];
+
+      for (let i = 1; i <= this.props.totalPagingRequirement; i++) {
+        buttons.push(
+          <IconButton key={i} {...this.getItemProps(i)}>
+            {i}
+          </IconButton>,
+        );
+      }
+      return buttons;
+    }
+  }
 
   render() {
     return (
@@ -37,18 +66,16 @@ export default class Pagination extends Component {
         >
           <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" /> Previous
         </Button>
+
         <div className="flex items-center gap-2">
-          <IconButton {...this.getItemProps(1)}>1</IconButton>
-          <IconButton {...this.getItemProps(2)}>2</IconButton>
-          <IconButton {...this.getItemProps(3)}>3</IconButton>
-          <IconButton {...this.getItemProps(4)}>4</IconButton>
-          <IconButton {...this.getItemProps(5)}>5</IconButton>
+          {this.makePaginationButtons()}
         </div>
+
         <Button
           variant="text"
           className="flex items-center gap-2"
           onClick={this.next}
-          disabled={this.state.active === 5}
+          disabled={this.state.active === this.props.totalPagingRequirement}
         >
           Next
           <ArrowRightIcon strokeWidth={2} className="h-4 w-4" />
@@ -57,3 +84,9 @@ export default class Pagination extends Component {
     );
   }
 }
+
+// Pagination.propTypes = {
+//   totalPagingRequirement: PropType.number.isRequired,
+//   setPage: PropType.func,
+//   fetchData: PropType.func,
+// };
