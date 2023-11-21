@@ -14,6 +14,7 @@ export default class Pagination extends Component {
     super(props);
     this.state = {
       active: 1,
+      pagesToShow: 3, // Number of pages to show at a time
     };
   }
   getItemProps = (i) => ({
@@ -43,14 +44,31 @@ export default class Pagination extends Component {
   makePaginationButtons() {
     if (this.props.totalPagingRequirement) {
       const buttons = [];
+      const totalPages = this.props.totalPagingRequirement;
+      const { active, pagesToShow } = this.state;
 
-      for (let i = 1; i <= this.props.totalPagingRequirement; i++) {
+      let startPage = Math.max(1, active - Math.floor(pagesToShow / 2));
+      let endPage = Math.min(totalPages, startPage + pagesToShow - 1);
+
+      // Adjust if there are not enough pages to fill pagesToShow
+      if (totalPages <= pagesToShow) {
+        startPage = 1;
+        endPage = totalPages;
+      } else {
+        // Ensure that the last page is shown when near the end
+        if (endPage - startPage < pagesToShow - 1) {
+          startPage = endPage - pagesToShow + 1;
+        }
+      }
+
+      for (let i = startPage; i <= endPage; i++) {
         buttons.push(
           <IconButton key={i} {...this.getItemProps(i)}>
             {i}
           </IconButton>,
         );
       }
+
       return buttons;
     }
   }
@@ -84,9 +102,3 @@ export default class Pagination extends Component {
     );
   }
 }
-
-// Pagination.propTypes = {
-//   totalPagingRequirement: PropType.number.isRequired,
-//   setPage: PropType.func,
-//   fetchData: PropType.func,
-// };

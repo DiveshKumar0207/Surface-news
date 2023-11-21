@@ -18,13 +18,14 @@ export default class News extends Component {
     country: "in",
     category: "general",
     endpoints: "top-headlines",
-    pageSize: 12,
+    pageSize: 8,
   };
 
   constructor() {
     super();
     this.state = {
       articles: [],
+      totalResults: 0,
       totalPagingRequirement: 0,
       currentPageNumber: 1,
       loading: false,
@@ -32,14 +33,13 @@ export default class News extends Component {
   }
 
   async componentDidMount() {
-    this.setState({
-      loading: true,
-    });
-    let URL = `https://newsapi.org/v2/${this.props.endpoints}?country=${this.props.country}&category=${this.props.category}&apikey=${this.props.URL}&page=${this.state.currentPageNumber}&pageSize=${this.props.pageSize}`;
+    this.setState.loading = true;
+    let URL = `https://newsapi.org/v2/${this.props.endpoints}?country=${this.props.country}&category=${this.props.category}&apikey=${this.props.URL}&page=1&pageSize=${this.props.pageSize}`;
     let data = await fetch(URL);
     let parsedData = await data.json();
     this.setState({
       articles: parsedData.articles,
+      totalResults: parsedData.totalResults,
       totalPagingRequirement: Math.ceil(
         parsedData.totalResults / this.props.pageSize,
       ),
@@ -58,7 +58,7 @@ export default class News extends Component {
     let parsedData = await data.json();
     this.setState({
       articles: parsedData.articles,
-      totalPagingRequirement: Math.ceil(parsedData.totalResults / 20),
+
       loading: false,
     });
   };
@@ -69,28 +69,28 @@ export default class News extends Component {
     if (hyphenSeparatedArray.length > 1) {
       return hyphenSeparatedArray.slice(0, -1).join("-");
     } else {
-      return "No hyphen found in the sentence.";
+      return sentence;
     }
+  }
+  capitalizeFirstLetter(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
   }
 
   render() {
     let newsImgURl;
     return (
       <>
-        {/* //TODO below div responsiveness */}
-        <div className="mx-24 mt-6 flex justify-between">
-          <Typography variant="h3" color="blue-gray" className="underline">
-            Top Headlines
+        <div className="mx-16 my-6 flex ">
+          <Typography variant="h4" color="blue-gray" className="underline">
+            {this.props.category == "general"
+              ? "Top"
+              : this.capitalizeFirstLetter(this.props.category)}
+            -Headlines
           </Typography>
-
-          <Pagination
-            totalPagingRequirement={this.state.totalPagingRequirement}
-            setPage={this.setPage}
-          />
         </div>
 
         <div className={` ${this.state.loading ? "block" : "hidden"}`}>
-          <div className="flex flex-shrink flex-wrap justify-center gap-4 p-16">
+          <div className="flex flex-shrink flex-wrap justify-center gap-4 p-8">
             <LoadingSkeleton loading={this.state.loading} />
             <LoadingSkeleton loading={this.state.loading} />
             <LoadingSkeleton loading={this.state.loading} />
@@ -98,11 +98,26 @@ export default class News extends Component {
           </div>
         </div>
 
-        <div className="flex flex-shrink flex-wrap justify-center gap-4 p-16">
+        <div className="flex flex-shrink flex-wrap justify-center gap-4 p-8">
           {this.state.articles.map((article) => {
             article.urlToImage
               ? (newsImgURl = article.urlToImage)
               : (newsImgURl = alternativeImg);
+
+            const articleDate = new Date(article.publishedAt);
+
+            // prettier-ignore
+            const month = ["January", "February", "March", "April", "June", "July", "August", "September", "October", "November", "December" ]
+            const publishDate = `${
+              month[articleDate.getMonth()]
+            } ${articleDate.getDate()}`;
+
+            let articleContent;
+            if (article && article.content) {
+              articleContent = article.content.substring(0, 190);
+            } else {
+              articleContent = "";
+            }
 
             return (
               <div key={article.url}>
@@ -110,18 +125,22 @@ export default class News extends Component {
                   imgUrl={newsImgURl}
                   title={this.getTitle(article.title)}
                   sourceName={article.source.name}
-                  content={article.content}
+                  content={articleContent}
                   readMoreUrl={article.url}
+                  publishDate={publishDate}
                 />
               </div>
             );
           })}
         </div>
+
+        <div className="flex justify-end pb-8 md:p-8 lg:p-12">
+          <Pagination
+            totalPagingRequirement={this.state.totalPagingRequirement}
+            setPage={this.setPage}
+          />
+        </div>
       </>
     );
   }
 }
-
-// News.propTypes = {
-//   URL: PropType.string,
-// };

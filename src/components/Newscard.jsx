@@ -16,13 +16,15 @@ export default class Newscard extends Component {
     sourceName: PropType.string,
     content: PropType.string,
     readMoreUrl: PropType.string,
+    publishDate: PropType.string,
   };
 
   constructor(props) {
     super(props);
   }
   render() {
-    let { imgUrl, title, content, sourceName, readMoreUrl } = this.props;
+    let { imgUrl, title, content, sourceName, readMoreUrl, publishDate } =
+      this.props;
 
     return (
       <Card className=" w-80 bg-blue-gray-100">
@@ -42,15 +44,15 @@ export default class Newscard extends Component {
             {title}
           </Typography>
 
-          <Typography variant="small">{content}..</Typography>
+          <Typography variant="small">{content}...</Typography>
         </CardBody>
 
         <div className="my-4 flex items-center justify-between px-9">
           <Typography className="text-xs" variant="lead">
-            by {sourceName}
+            from {sourceName}
           </Typography>
           <Typography className="text-xs" variant="lead">
-            January 10
+            {publishDate}
           </Typography>
         </div>
 

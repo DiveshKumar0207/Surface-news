@@ -187,9 +187,9 @@ export default class NavbarComponent extends Component {
               as="a"
               href="/"
               variant="h6"
-              className="ml-2 mr-4 cursor-pointer py-1.5"
+              className="ml-2 mr-4 cursor-pointer py-1.5 text-textColor-high"
             >
-              SurfaceNews
+              Surface News
             </Typography>
 
             {/*  */}
