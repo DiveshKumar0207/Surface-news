@@ -8,11 +8,12 @@ import LoadingSkeleton from "./Skeleton";
 
 export default class News extends Component {
   static propTypes = {
-    URL: PropType.string,
+    APIKEY: PropType.string,
     country: PropType.string,
     pageSize: PropType.number,
     endpoints: PropType.string,
     category: PropType.string,
+    query: PropType.string,
   };
   static defaultProps = {
     country: "in",
@@ -32,19 +33,35 @@ export default class News extends Component {
     };
   }
 
-  async componentDidMount() {
-    this.setState.loading = true;
-    let URL = `https://newsapi.org/v2/${this.props.endpoints}?country=${this.props.country}&category=${this.props.category}&apikey=${this.props.URL}&page=1&pageSize=${this.props.pageSize}`;
+  async fetchFunction(endpoints, pageno) {
+    let URL;
+    "everything" === endpoints
+      ? (URL = `https://newsapi.org/v2/${this.props.endpoints}?q=${this.props.query}&apikey=${this.props.APIKEY}&page=${pageno}&pageSize=${this.props.pageSize}`)
+      : (URL = `https://newsapi.org/v2/${this.props.endpoints}?country=${this.props.country}&category=${this.props.category}&apikey=${this.props.APIKEY}&page=${pageno}&pageSize=${this.props.pageSize}`);
     let data = await fetch(URL);
     let parsedData = await data.json();
-    this.setState({
-      articles: parsedData.articles,
-      totalResults: parsedData.totalResults,
-      totalPagingRequirement: Math.ceil(
-        parsedData.totalResults / this.props.pageSize,
-      ),
-      loading: false,
-    });
+    return parsedData;
+  }
+
+  async componentDidMount() {
+    this.setState({ loading: true });
+    let parsedData;
+    // if something goes wrong in search, index endpoint will be hit
+    parsedData = await this.fetchFunction(this.props.endpoints, 1);
+    if (!parsedData) {
+      parsedData = await this.fetchFunction("top-headlines", 1);
+    }
+
+    if (parsedData) {
+      this.setState({
+        articles: parsedData.articles,
+        totalResults: parsedData.totalResults,
+        totalPagingRequirement: Math.ceil(
+          parsedData.totalResults / this.props.pageSize,
+        ),
+        loading: false,
+      });
+    }
   }
 
   // setPage func ->sent to be prop
@@ -53,12 +70,16 @@ export default class News extends Component {
       loading: true,
       currentPageNumber: pageno,
     });
-    let URL = `https://newsapi.org/v2/${this.props.endpoints}?country=${this.props.country}&category=${this.props.category}&apikey=${this.props.URL}&page=${pageno}&pageSize=${this.props.pageSize}`;
-    let data = await fetch(URL);
-    let parsedData = await data.json();
+    let parsedData;
+    // if something goes wrong in search, index endpoint will be hit
+    parsedData = await this.fetchFunction(this.props.endpoints, pageno);
+    if (!parsedData) {
+      parsedData = await this.fetchFunction("top-headlines", pageno);
+    }
+    console.log("hhyhyy");
+
     this.setState({
       articles: parsedData.articles,
-
       loading: false,
     });
   };

@@ -1,5 +1,6 @@
 import { Component } from "react";
 import { Link } from "react-router-dom";
+import PropType from "prop-types";
 import {
   Navbar,
   Typography,
@@ -118,44 +119,56 @@ class NavListMenu extends Component {
 }
 
 class NavList extends Component {
-  constructor() {
-    super();
+  static propTypes = {
+    handleValueReset: PropType.func,
+  };
+  constructor(props) {
+    super(props);
     this.state = {
       isMenuOpen: false,
     };
   }
   render() {
     return (
-      <ul className="my-2 flex flex-col lg:mb-0 lg:mt-0 lg:flex-row lg:items-center  ">
-        <Typography as="li" variant="small" className=" font-medium">
-          <Link
-            to={"/"}
-            className="flex items-center rounded-md px-3 py-2 font-medium  text-textColor-high  transition-colors hover:hover:bg-overlayDarkColors-dp04 lg-max:mx-4 "
-          >
-            Top Stories
-          </Link>
-        </Typography>
+      <>
+        <ul className="my-2 flex flex-col lg:mb-0 lg:mt-0 lg:flex-row lg:items-center  ">
+          <Typography as="li" variant="small" className=" font-medium">
+            <Link
+              to={"/"}
+              className="flex items-center rounded-md px-3 py-2 font-medium  text-textColor-high  transition-colors hover:hover:bg-overlayDarkColors-dp04 lg-max:mx-4 "
+            >
+              Top Stories
+            </Link>
+          </Typography>
 
-        <Typography as="li" variant="small" className=" font-medium">
-          <Link
-            to={"/business"}
-            className="flex items-center rounded-md px-3 py-2 font-medium  text-textColor-high  transition-colors hover:hover:bg-overlayDarkColors-dp04 lg-max:mx-4 "
-          >
-            Buisness
-          </Link>
-        </Typography>
+          <Typography as="li" variant="small" className=" font-medium">
+            <Link
+              to={"/business"}
+              className="flex items-center rounded-md px-3 py-2 font-medium  text-textColor-high  transition-colors hover:hover:bg-overlayDarkColors-dp04 lg-max:mx-4 "
+            >
+              Buisness
+            </Link>
+          </Typography>
 
-        <NavListMenu />
-      </ul>
+          <NavListMenu />
+        </ul>
+      </>
     );
   }
 }
 
 export default class NavbarComponent extends Component {
+  static propTypes = {
+    onSearchChange: PropType.func,
+    onSearchSubmit: PropType.func,
+    handleKeyUp: PropType.func,
+    searchValue: PropType.string,
+  };
   constructor() {
     super();
     this.state = {
       openNav: false,
+      value: "",
     };
     // Create an instance of NavList
     this.NavListInstance = new NavList();
@@ -174,6 +187,8 @@ export default class NavbarComponent extends Component {
 
   render() {
     const { openNav } = this.state;
+    const { onSearchSubmit, onSearchChange, searchValue, handleKeyUp } =
+      this.props;
 
     return (
       <div>
@@ -224,11 +239,16 @@ export default class NavbarComponent extends Component {
                 containerProps={{
                   className: "min-w-[288px]",
                 }}
+                value={searchValue}
+                onChange={onSearchChange}
               />
+
               <Button
                 size="sm"
                 color="white"
                 className="!absolute right-1 top-1 rounded"
+                onClick={onSearchSubmit}
+                onKeyUp={handleKeyUp}
               >
                 Search
               </Button>
